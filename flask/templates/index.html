@@ -16,12 +16,14 @@
       }
       .form-section img {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
       }
       .uploaded-images {
         display: flex;
         justify-content: center;
         gap: 20px;
         flex-wrap: wrap;
+        margin-bottom: 2rem;
       }
       .gap-between-forms {
         margin-bottom: 2rem;
@@ -29,6 +31,17 @@
       .image-container {
         text-align: center;
         margin: 1rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+      }
+      .processed-image-container {
+        margin-top: 2rem;
+        padding: 1rem;
+        border-top: 1px solid #dee2e6;
+      }
+      .flash-messages {
+        margin-bottom: 1rem;
       }
     </style>
   </head>
@@ -37,6 +50,19 @@
       <div class="row">
         <div class="col-12 col-md-8 mx-auto mt-5 text-center">
           <h1 class="mb-5">Insert an Image and a Watermark</h1>
+
+          <!-- Flash Messages -->
+          <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          </div>
 
           <!-- Form Section -->
           <form method="POST" enctype="multipart/form-data" class="form-section gap-between-forms">
@@ -82,9 +108,9 @@
             <div class="uploaded-images">
               {% if photo_url %}
               <div class="image-container">
-                <h6>Image</h6>
-                <img src="{{ photo_url }}" alt="Uploaded Photo" class="img-fluid" style="max-width: 300px;">
-                <form method="POST" action="{{ url_for('delete_image_file', filename=photo_filename, watermark_filename=watermark_filename) }}" class="mt-3">
+                <h6>Original Image</h6>
+                <img src="{{ photo_url }}" alt="Uploaded Photo" class="img-fluid mb-3" style="max-width: 300px;">
+                <form method="POST" action="{{ url_for('delete_image_file', filename=photo_filename, watermark_filename=watermark_filename) }}">
                   <button type="submit" class="btn btn-danger">Delete Image</button>
                 </form>
               </div>
@@ -93,13 +119,38 @@
               {% if watermark_url %}
               <div class="image-container">
                 <h6>Watermark</h6>
-                <img src="{{ watermark_url }}" alt="Uploaded Watermark" class="img-fluid" style="max-width: 150px;">
-                <form method="POST" action="{{ url_for('delete_watermark_file', filename=watermark_filename, photo_filename=photo_filename) }}" class="mt-3">
+                <img src="{{ watermark_url }}" alt="Uploaded Watermark" class="img-fluid mb-3" style="max-width: 150px;">
+                <form method="POST" action="{{ url_for('delete_watermark_file', filename=watermark_filename, photo_filename=photo_filename) }}">
                   <button type="submit" class="btn btn-warning">Delete Watermark</button>
                 </form>
               </div>
               {% endif %}
             </div>
+
+            <!-- Add Process Watermark Button -->
+            {% if photo_url and watermark_url %}
+            <div class="mb-4">
+              <a href="{{ url_for('process_watermark', image_filename=photo_filename, watermark_filename=watermark_filename) }}" 
+                 class="btn btn-primary btn-lg">
+                Apply Watermark
+              </a>
+            </div>
+            {% endif %}
+
+            <!-- Display Processed Image -->
+            {% if processed_url %}
+            <div class="processed-image-container">
+              <h5 class="mb-3">Processed Image</h5>
+              <div class="image-container">
+                <img src="{{ processed_url }}" alt="Processed Image" class="img-fluid mb-3" style="max-width: 400px;">
+                <div>
+                  <a href="{{ processed_url }}" download class="btn btn-success">
+                    Download Processed Image
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
           </div>
         </div>
       </div>
