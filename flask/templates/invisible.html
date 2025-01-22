@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/mainpage.css') }}">
+    <title>InstaMark - Steganography</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">InstaMark</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('visible_watermark') }}">Visible</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('invisible_watermark') }}">Steganography</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <div class="row">
+        <div class="col-12 col-md-8 mx-auto mt-5 text-center">
+          <h1 class="mb-5">Image Steganography</h1>
+
+          <!-- Upload Form Section -->
+          <form method="POST" enctype="multipart/form-data" class="form-section gap-between-forms">
+            {{ form.hidden_tag() }}
+
+            <div class="d-flex justify-content-center align-items-end flex-wrap">
+              {% if not photo_url %}
+              <div class="me-3">
+                <label for="photo" class="form-label">Cover Image</label>
+                {{ form.photo(class="form-control") }}
+              </div>
+              {% endif %}
+
+              {% if not watermark_url %}
+              <div class="me-3">
+                <label for="watermark" class="form-label">Secret Image</label>
+                {{ form.watermark(class="form-control") }}
+              </div>
+              {% endif %}
+
+              {% if not photo_url or not watermark_url %}
+              <div>
+                {{ form.submit(class="btn btn-success mt-3") }}
+              </div>
+              {% endif %}
+            </div>
+          </form>
+
+          <!-- Display Uploaded Images -->
+          <div class="form-section">
+            <div class="uploaded-images">
+              {% if photo_url %}
+              <div class="image-container">
+                <h6>Cover Image</h6>
+                <img src="{{ photo_url }}" alt="Cover Image" class="img-fluid" style="max-width: 300px;">
+                <form method="POST" action="{{ url_for('delete_image_file', filename=photo_filename) }}" class="mt-3">
+                  <button type="submit" class="btn btn-danger">Delete Image</button>
+                </form>
+              </div>
+              {% endif %}
+
+              {% if watermark_url %}
+              <div class="image-container">
+                <h6>Secret Image</h6>
+                <img src="{{ watermark_url }}" alt="Secret Image" class="img-fluid" style="max-width: 150px;">
+                <form method="POST" action="{{ url_for('delete_watermark_file', filename=watermark_filename) }}" class="mt-3">
+                  <button type="submit" class="btn btn-warning">Delete Image</button>
+                </form>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Steganography Controls -->
+            {% if photo_url and watermark_url %}
+            <div class="watermark-settings mb-4">
+              <h5 class="mb-3">Steganography Settings</h5>
+              <form method="POST" class="text-center">
+                {{ stego_form.csrf_token }}
+                {{ stego_form.apply(class="btn btn-primary") }}
+              </form>
+            </div>
+            {% endif %}
+
+            <!-- Display Processed Image -->
+            {% if processed_url %}
+            <div class="processed-image-container">
+              <h5 class="mb-3">Steganographic Image</h5>
+              <div class="image-container">
+                <img src="{{ processed_url }}" alt="Steganographic Image" class="img-fluid" style="max-width: 400px;">
+                <div class="mt-3 d-flex justify-content-center gap-2">
+                  <a href="{{ processed_url }}" download class="btn btn-success">
+                    Download Image
+                  </a>
+                  <form method="POST" class="d-inline">
+                    {{ stego_form.csrf_token }}
+                    {{ stego_form.extract(class="btn btn-info") }}
+                  </form>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Display Extracted Image -->
+            {% if extracted_url %}
+            <div class="processed-image-container mt-4">
+              <h5 class="mb-3">Extracted Secret Image</h5>
+              <div class="image-container">
+                <img src="{{ extracted_url }}" alt="Extracted Image" class="img-fluid" style="max-width: 400px;">
+                <div class="mt-3">
+                  <a href="{{ extracted_url }}" download class="btn btn-success">
+                    Download Extracted Image
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          document.querySelectorAll('.alert').forEach(function(alert) {
+            new bootstrap.Alert(alert).close();
+          });
+        }, 5000);
+      });
+    </script>
+  </body>
+</html>

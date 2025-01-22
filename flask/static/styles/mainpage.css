@@ -1,0 +1,46 @@
+.form-control {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 15px;
+  }
+  .form-section {
+    margin-bottom: 2rem;
+  }
+  .form-section img {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .uploaded-images {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .gap-between-forms {
+    margin-bottom: 2rem;
+  }
+  .image-container {
+    text-align: center;
+    margin: 1rem;
+  }
+  .processed-image-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+  }
+  .watermark-settings {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .watermark-settings .form-group {
+    margin-bottom: 1rem;
+  }
+  .flash-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
