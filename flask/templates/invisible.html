@@ -107,6 +107,17 @@
               <h5 class="mb-3">Steganography Settings</h5>
               <form method="POST" class="text-center">
                 {{ stego_form.csrf_token }}
+                
+                <!-- Choose Steganography Method -->
+                <div class="form-group mb-3">
+                  <label for="stego_method" class="form-label">Choose Steganography Method</label>
+                  <select class="form-control" name="stego_method" id="stego_method">
+                    <option value="lsb">LSB (Least Significant Bit)</option>
+                    <option value="dct">DCT (Discrete Cosine Transform)</option>
+                  </select>
+                </div>
+
+                <!-- Apply Steganography -->
                 {{ stego_form.apply(class="btn btn-primary") }}
               </form>
             </div>
