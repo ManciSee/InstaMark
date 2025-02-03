@@ -14,13 +14,12 @@ app.config['UPLOADED_PHOTOS_DEST'] = '../uploads/images'
 app.config['UPLOADED_WATERMARKS_DEST'] = '../uploads/watermarks'
 app.config['PROCESSED_IMAGES_DEST'] = '../uploads/processed'
 
-# Create directories if they don't exist
 for directory in [app.config['UPLOADED_PHOTOS_DEST'], 
                  app.config['UPLOADED_WATERMARKS_DEST'],
                  app.config['PROCESSED_IMAGES_DEST']]:
     os.makedirs(directory, exist_ok=True)
 
-# Configure upload sets
+
 photos = UploadSet('photos', IMAGES)
 watermarks = UploadSet('watermarks', IMAGES)
 configure_uploads(app, (photos, watermarks))
@@ -30,7 +29,7 @@ class UploadForm(FlaskForm):
     watermark = FileField(validators=[FileAllowed(watermarks, 'Image only!')])
     submit = SubmitField('Upload')
 
-# File serving routes
+
 @app.route('/uploads/images/<filename>')
 def uploaded_image(filename):
     return send_from_directory(app.config['UPLOADED_PHOTOS_DEST'], filename)
@@ -43,7 +42,7 @@ def uploaded_watermark(filename):
 def processed_image(filename):
     return send_from_directory(app.config['PROCESSED_IMAGES_DEST'], filename)
 
-# File deletion routes
+
 @app.route('/delete/images/<filename>', methods=['POST'])
 def delete_image_file(filename):
     file_path = os.path.join(app.config['UPLOADED_PHOTOS_DEST'], filename)

@@ -9,7 +9,7 @@
     <title>InstaMark - Steganography</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">InstaMark</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,7 +21,7 @@
               <a class="nav-link" href="{{ url_for('home') }}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('visible_watermark') }}">Visible</a>
+              <a class="nav-link" href="{{ url_for('visible_watermark') }}">Visible Watermark</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" href="{{ url_for('invisible_watermark') }}">Steganography</a>
@@ -31,7 +31,7 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container mt-4">
       <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -48,7 +48,12 @@
 
       <div class="row">
         <div class="col-12 col-md-8 mx-auto mt-5 text-center">
-          <h1 class="mb-5">Image Steganography</h1>
+          <h1 class="mb-5">Invisible Watermark</h1>
+
+          <!-- Description Text -->
+          <p class="lead mb-4">
+            This page applies the Least Significant Bit (LSB) algorithm to insert a watermark into an image. The watermark can later be extracted from the image.
+          </p>
 
           <!-- Upload Form Section -->
           <form method="POST" enctype="multipart/form-data" class="form-section gap-between-forms">
@@ -104,20 +109,9 @@
             <!-- Steganography Controls -->
             {% if photo_url and watermark_url %}
             <div class="watermark-settings mb-4">
-              <h5 class="mb-3">Steganography Settings</h5>
+              <h5 class="mb-3">Least Significant Bit</h5>
               <form method="POST" class="text-center">
                 {{ stego_form.csrf_token }}
-                
-                <!-- Choose Steganography Method -->
-                <div class="form-group mb-3">
-                  <label for="stego_method" class="form-label">Choose Steganography Method</label>
-                  <select class="form-control" name="stego_method" id="stego_method">
-                    <option value="lsb">LSB (Least Significant Bit)</option>
-                    <option value="dct">DCT (Discrete Cosine Transform)</option>
-                  </select>
-                </div>
-
-                <!-- Apply Steganography -->
                 {{ stego_form.apply(class="btn btn-primary") }}
               </form>
             </div>

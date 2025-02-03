@@ -9,32 +9,30 @@
     <title>InstaMark - Upload</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">InstaMark</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id = "navbarNav">
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('home') }}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('visible_watermark') }}">Visible</a>
+              <a class="nav-link active" href="{{ url_for('visible_watermark') }}">Visible Watermark</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="{{ url_for('invisible_watermark') }}">Steganography</a>
+              <a class="nav-link " href="{{ url_for('invisible_watermark') }}">Steganography</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <div class="container mt-4">
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <div class="container">
+    <div class="container mt-4">
       <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -50,13 +48,18 @@
       {% endwith %}
 
       <div class="row">
-        <div class="col-12 col-md-8 mx-auto mt-5 text-center">
-          <h1 class="mb-5">Insert an Image and a Watermark</h1>
+        <div class="col-12 col-md-8 mx-auto text-center">
+          <h1 class="mb-4">Visible Watermark</h1>
+
+          <!-- Description Text -->
+          <p class="lead mb-4">
+            This page allows users to upload an image and a watermark, choose where to place it on the image, adjust its size and opacity. After selecting the settings, the user can view the image with the watermark applied and download it.
+          </p>
 
           <!-- Upload Form Section -->
           <form method="POST" enctype="multipart/form-data" class="form-section gap-between-forms">
             {{ form.hidden_tag() }}
-
+            
             <!-- Error messages -->
             {% for field in [form.photo, form.watermark] %}
               {% for error in field.errors %}
@@ -68,14 +71,14 @@
 
             <div class="d-flex justify-content-center align-items-end flex-wrap">
               {% if not photo_url %}
-              <div class="me-3">
+              <div class="me-3 ">
                 <label for="photo" class="form-label">Image</label>
                 {{ form.photo(class="form-control") }}
               </div>
               {% endif %}
 
               {% if not watermark_url %}
-              <div class="me-3">
+              <div class="me-3 ">
                 <label for="watermark" class="form-label">Watermark</label>
                 {{ form.watermark(class="form-control") }}
               </div>
@@ -93,7 +96,7 @@
           <div class="form-section">
             <div class="uploaded-images">
               {% if photo_url %}
-              <div class="image-container">
+              <div class="image-container mb-4">
                 <h6>Original Image</h6>
                 <img src="{{ photo_url }}" alt="Uploaded Photo" class="img-fluid" style="max-width: 300px;">
                 <form method="POST" action="{{ url_for('delete_image_file', filename=photo_filename, watermark_filename=watermark_filename) }}" class="mt-3">
@@ -103,7 +106,7 @@
               {% endif %}
 
               {% if watermark_url %}
-              <div class="image-container">
+              <div class="image-container mb-4">
                 <h6>Watermark</h6>
                 <img src="{{ watermark_url }}" alt="Uploaded Watermark" class="img-fluid" style="max-width: 150px;">
                 <form method="POST" action="{{ url_for('delete_watermark_file', filename=watermark_filename, photo_filename=photo_filename) }}" class="mt-3">
@@ -119,22 +122,22 @@
               <h5 class="mb-3">Watermark Settings</h5>
               <form method="POST" action="{{ url_for('process_visible_watermark', image_filename=photo_filename, watermark_filename=watermark_filename) }}">
                 {{ settings_form.hidden_tag() }}
-                
+
                 <div class="form-group">
                   <label for="position" class="form-label">Position</label>
                   {{ settings_form.position(class="form-select") }}
                 </div>
-                
+
                 <div class="form-group">
                   <label for="size" class="form-label">Size (%)</label>
                   {{ settings_form.size(class="form-control", type="number", min="1", max="100") }}
                 </div>
-                
+
                 <div class="form-group">
                   <label for="opacity" class="form-label">Opacity (%)</label>
                   {{ settings_form.opacity(class="form-control", type="number", min="1", max="100") }}
                 </div>
-                
+
                 {{ settings_form.apply(class="btn btn-primary mt-3") }}
               </form>
             </div>
@@ -142,7 +145,7 @@
 
             <!-- Display Processed Image -->
             {% if processed_url %}
-            <div class="processed-image-container">
+            <div class="processed-image-container mb-4">
               <h5 class="mb-3">Processed Image</h5>
               <div class="image-container">
                 <img src="{{ processed_url }}" alt="Processed Image" class="img-fluid" style="max-width: 400px;">
@@ -159,7 +162,6 @@
       </div>
     </div>
 
-    
     <!-- Auto-dismiss flash messages -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
@@ -172,5 +174,7 @@
         });
       });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
